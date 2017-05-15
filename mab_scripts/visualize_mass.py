@@ -57,19 +57,19 @@ plotFeature = 0  # Set this value to 1
 bC = 1
 #bC = (1, 2, 3)       # Number of Bernoulli trials considered (1 - 1of1, 2 - 1of5, 3 - 1of10)
 
-soc = 0  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
+soc = 1  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
 # soc = (0, 1)
 
-nIter = 100  #Number of iterations (timesteps or duration, 100, 500, or 1000)
-#nIter = (100, 500, 1000)
+#nIter = 100  #Number of iterations (timesteps or duration, 100, 500, or 1000)
+nIter = (100, 500, 1000)
 
-soln = 0     # Solution of interest (Gittins Index, GI - 0, Uninformed Random, UR - 1; Educated Guess, EG - 2)
-# soln = (0, 1, 2)
+#soln = 0     # Solution of interest (Gittins Index, GI - 0, Uninformed Random, UR - 1; Educated Guess, EG - 2)
+soln = (0, 1, 2, 3)
 
-distrT = 0    # Distribution type (Uniform Random - 0, Mesh grid - 1)
+distrT = 1    # Distribution type (Uniform Random - 0, Mesh grid - 1)
 # distrT = (0, 1)
 
-bStationary = 0  # Flag indicating whether or not the TX agent ("B") is stationary (1) or not ()
+bStationary = 1  # Flag indicating whether or not the TX agent ("B") is stationary (1) or not ()
 # bStationary = (0, 1)
 
 N = 20       # Number of candidate locations
@@ -88,7 +88,7 @@ locs = pd.read_table(locsFileIn, header=None, sep=',', names=['alocx', 'alocy', 
 # Update to match candidate location input file
 
 # Create string for input file
-dataFileIn = './improv_testdata10APR17_stationaryB_'+str(bStationary)+'.txt'
+dataFileIn = './improv_testdata15MAY17_stationaryB_'+str(bStationary)+'_beta_p5.txt'
 colT = ['id', 'selx', 'sely', 'rngP', 'rng', 'out', 'bern_cnt', 'distribution', 'soc', 'loc_cnt',
         'iter', 'sol_type', 'dist_tot']  # Define the column headers for data extraction
 data_in = pd.read_table(dataFileIn, header=None, sep=',', index_col=False, names=colT)
@@ -100,19 +100,18 @@ data_in[['id', 'out', 'bern_cnt', 'distribution', 'soc', 'loc_cnt', 'iter', 'sol
                                'iter', 'sol_type', 'dist_tot']].astype(int)
 locs_stat = []
 data_stat = []
-'''
+
 # Printing statistics of different sets of conditions
-for b in bC:
-    for nI in nIter:
+for nI in nIter:
+    for s in soln:
         # Define tuple of inputs to parsing function
-        test_in = (b, soc, nI, distrT, N, soln)
+        test_in = (bC, soc, nI, distrT, N, s)
         locs_stat, data_stat = parse_mab_input(data_in, test_in)
         success_total = locs_stat.loc[:, 'success'].astype(int).sum(axis=0)
         trial_total = locs_stat.loc[:, 'trials'].astype(int).sum(axis=0)
-        print("%% Success: %6.2f --- Distance: %7.2f\n" % ((100*success_total/trial_total),
-                                                           data_stat.loc[1, 'dist_tot']))
+        print("%6.2f\t%7.2f\n" % ((100*success_total/trial_total), data_stat.loc[1, 'dist_tot']))
+
 '''
-                                                           
 #Print for a single case
 test_in = (bC, soc, nIter, distrT, N, soln)
 locs_stat, data_stat = parse_mab_input(data_in, test_in)
@@ -133,3 +132,4 @@ scat.set_ylim(0, 20.5)
 line = toplot.plot(x='index', y='id')
 
 plt.show()
+'''

@@ -4,11 +4,11 @@ socTypeS = {'gamma','exp'};
 NN=[20 100]; %Number of agents
 distType = [0 1]; % Spatial distribution type (0-Random, 1-Mesh)
 iters = [100 500 1000]; %Number of iterations ("t")
-vs = [0 1 2]; %Solution version: 0 - Varaiya, 1 - Baseline(random),
+vs = [0 1 2 3]; %Solution version: 0 - Varaiya, 1 - Baseline(random),
       %2 - Semi-intelligent
 h = waitbar(0, 'loading and writing data, WAIT!');
 
-data_name = strcat('improv_testdata12MAY17_stationaryB_1.txt');
+data_name = strcat('improv_testdata15MAY17_stationaryB_1_beta_p95.txt');
 sB = 0;
 
 %fid_data = fopen(data_name,'a+');

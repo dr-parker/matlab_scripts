@@ -109,10 +109,10 @@ v = [0.22263 0.28366 0.32072 0.34687 0.36678 0.38267 0.39577 0.40682 0.41631... 
 %      0.36525 0.38715 0.39593 0.40070 0.40370 0.40577 0.40728 0.40843 0.40934... %10-90
 %      0.41008 0.41348 0.41466 0.41525 0.41561 0.41585 0.41602 0.41615 0.41625 0.41633]; %100 - 1000
 
-% %For beta =0.5
-% v = [0.14542 0.17209 0.18522 0.19317 0.19855 0.20244 0.20539 0.20771 0.20959... %1-9
-%      0.21113 0.21867 0.22142 0.22286 0.22374 0.22433 0.22476 0.22508 0.22534... %10-90
-%      0.22554 0.22646 0.22678 0.22693 0.22703 0.22709 0.22714 0.22717 0.22720 0.22722]; %100 - 1000
+%For beta =0.5
+%v = [0.14542 0.17209 0.18522 0.19317 0.19855 0.20244 0.20539 0.20771 0.20959... %1-9
+%     0.21113 0.21867 0.22142 0.22286 0.22374 0.22433 0.22476 0.22508 0.22534... %10-90
+%     0.22554 0.22646 0.22678 0.22693 0.22703 0.22709 0.22714 0.22717 0.22720 0.22722]; %100 - 1000
  
 vi = [1:10,20:10:100,200:100:1000]; %Generate vector of iterations associated with pre-calculated Gittins' Indices
 
@@ -124,7 +124,8 @@ vNew = interp1(vi,v,vi_interp,'cubic');
 %plot(vi_interp,vNew,'b');
 gittinsScale = 0.2236; 
 %Plot Gittins Index values (scaled version)
-% Presuming a = 0.95, 0.2236 = (1-a)^0.5 and vi_interp = n
+% Presuming a = 0.95, 0.2236 = (1-a)^0.5 and vi_interp = n, where n = [1 1000]
+% Presuming a = 0.5, 0.7071 = (1-a)^0.5 and vi_interp = n, where n = [1 1000] 
 %gittinsExp will be the function v(0,n,1) as referenced in 2.13 of Gittins
 %et al. (1989)
 gittinsExp = vNew./(vi_interp*gittinsScale);
@@ -521,6 +522,40 @@ switch(opts(1))
             bestArmHistory(t,:) = [agentA rA rr mark];
         end
         solnMat = gittinsMat; %Return history
+
+     case {3} %Uniformed Random (UR)
+        %Placeholder, not used, needed for return variable, analogous to
+        %gittinsMat.
+        dummyMat = zeros(armNumA, 5,opts(2)); %E.G. [N x 5 x Epochs]
+        initAgentId = ceil(armNumA*rand);
+        agentA = armLocA(initAgentId,:); %Initialize current location of Agent A
+        for t = 1:opts(2)
+                %Determine AgentA's next location for reception
+                agentAold = agentA;
+                ranSel = ceil(armNumA*rand); %Choose random location
+                agentA = armLocA(ranSel,:); %Move agentA to new arm location
+                distTot = distTot + pdist([agentAold;agentA]);
+                agentId(t) = ranSel;
+                
+                if stationaryB == 0
+                    % Randomly select index of new location for Agent B
+                    bLoc = ceil(rand*armNumB);
+                    rr = pdist([armLocB(bLoc,:);agentA],'euclidean');
+                else
+                    rr = pdist([mean(armLocB,1);agentA],'euclidean');
+                end
+                
+                rA = interp1(xx,c,rr,'linear');
+                
+                %Evaluate success or failure of decision
+                mark = envReward(rA,opts(3),opts(4));
+                
+                %Save [x-best y-best separation-best]
+                bestArmHistory(t,:) = [agentA rA rr mark];
+                %Update waitbar
+%                waitbar(t/opts(2));
+        end    
+        solnMat = dummyMat;        
         
     otherwise
         disp{'Unknown selection'}
