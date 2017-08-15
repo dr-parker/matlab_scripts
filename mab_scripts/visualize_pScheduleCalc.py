@@ -6,7 +6,30 @@ from bokeh.models import HoverTool
 
 #data_file_in = open('pScheduleCalcBern_ucb_2017_07_25__13_19_09.txt.log', 'r')
 #data_file_in = open('pScheduleCalcBern_Gittins_Index_test100.txt','r')
-data_file_in = open('GI_100.txt','r')
+#data_file_name = 'GI_100.log'
+#data_file_name = 'UR_test.log'
+data_file_name = 'UCB_test.log'
+#data_file_name = 'EG_test.log'
+data_file_in = open(data_file_name,'r')
+
+#Solution types: (0 - GI, UR - 1, UCB - 2, EG - 3)
+if 'GI' in data_file_name:
+    method_type = 0
+elif 'UR' in data_file_name:
+    method_type = 1
+elif 'UCB' in data_file_name:
+    method_type = 2
+elif 'EG' in data_file_name:
+    method_type = 3
+
+'''
+if '100.' in data_file_name:
+    max_state_change = 100
+elif '500.' in data_file_name:
+    max_state_change = 500
+elif '1000.' in data_file_name:
+    max_state_change = 1000
+'''
 
 lst = [line.strip() for line in data_file_in.readlines()] #Remove extra white space from front and back of lines
 
@@ -69,9 +92,8 @@ for line in lst:
 
 # commented out to use B waypoint average
 
-        """
 
-        elif 'Vehicle B Way Points' in line:
+    elif 'Vehicle B Way Points' in line:
 
         for i in range(1, N+1):
 
@@ -82,10 +104,6 @@ for line in lst:
             b_waypoint_lon.append(lst[lst.index(line) + i]
 
                                   [lst[lst.index(line) + i].index(',') + 1:])
-
-        """
-
-    
 
     # indication of B mean position
 
@@ -114,14 +132,22 @@ for line in lst:
     elif 'Current State' in line:
         #Retrieve current count of how many times algorithm has been run to identify a solution
         nxt_ln = lst.index(line)  #Define the indicie of the next line of interest   
-        #Retrieve updated total distance traveled upon arriving at the most recent waypoint              
-        best_arm_state['count'].append(line[line.index(':') + 2:])
-        best_arm_state['tot_dist'].append(lst[nxt_ln+1][lst[nxt_ln+1].index('=')+2:])
-        best_arm_state['id'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('d = ') + 4:lst[nxt_ln+3].index(' | X')])
-        best_arm_state['lat'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('| X = ') + 6:lst[nxt_ln+3].index(' | Y')])
-        best_arm_state['lon'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('| Y = ') + 6:lst[nxt_ln+3].index(' | S')])
-        best_arm_state['success'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('?') + 4:])       
-        
+        #Retrieve updated total distance traveled upon arriving at the most recent waypoint 
+
+        if (method_type != 1) : #If Uniform Random, account for the difference in log file output    
+            best_arm_state['count'].append(line[line.index(':') + 2:])
+            best_arm_state['tot_dist'].append(lst[nxt_ln+1][lst[nxt_ln+1].index('=')+2:])
+            best_arm_state['id'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('d = ') + 4:lst[nxt_ln+3].index(' | X')])
+            best_arm_state['lat'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('| X = ') + 6:lst[nxt_ln+3].index(' | Y')])
+            best_arm_state['lon'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('| Y = ') + 6:lst[nxt_ln+3].index(' | S')])
+            best_arm_state['success'].append(lst[nxt_ln+3][lst[nxt_ln+3].index('?') + 4:])       
+        else: #account for Uniform Random
+            best_arm_state['count'].append(line[line.index(':') + 2:])
+            best_arm_state['tot_dist'].append(lst[nxt_ln+1][lst[nxt_ln+1].index('=')+2:])
+            best_arm_state['id'].append(lst[nxt_ln+4][lst[nxt_ln+4].index('d = ') + 4:lst[nxt_ln+4].index(' | X')])
+            best_arm_state['lat'].append(lst[nxt_ln+4][lst[nxt_ln+4].index('| X = ') + 6:lst[nxt_ln+4].index(' | Y')])
+            best_arm_state['lon'].append(lst[nxt_ln+4][lst[nxt_ln+4].index('| Y = ') + 6:lst[nxt_ln+4].index(' | S')])
+            best_arm_state['success'].append(lst[nxt_ln+4][lst[nxt_ln+4].index('?') + 4:]) 
         #Update best_state list
                 
         #For the remaining sets, iterate over 
@@ -130,15 +156,30 @@ for line in lst:
 
             # slice the line into lat and long based on the position of the = and , in the data. Append to lists.
             nxt_ln = lst.index(line) + i #MDefine the indicie of the next line of interest
-            #Treat lst[nxt_ln] as an object and specify the start and end indices s.t. the index of '=' is 0
-            arm_state['id'].append(lst[nxt_ln][lst[nxt_ln].index('d =') + 4:lst[nxt_ln].index(' | Sigma')])        
-            arm_state['s1'].append(lst[nxt_ln][lst[nxt_ln].index('q =') + 4:lst[nxt_ln].index(' | Theta')])        
-            arm_state['s2'].append(lst[nxt_ln][lst[nxt_ln].index('g =') + 4:lst[nxt_ln].index(' | Num')])        
-            arm_state['num_pull'].append(lst[nxt_ln][lst[nxt_ln].index('s =') + 4:lst[nxt_ln].index(' | Val')])        
-            arm_state['index_val'].append(lst[nxt_ln][lst[nxt_ln].index('e =') + 4:])       
+            if ((method_type == 0) or (method_type == 3)):
+                #Treat lst[nxt_ln] as an object and specify the start and end indices s.t. the index of '=' is 0
+                arm_state['id'].append(lst[nxt_ln][lst[nxt_ln].index('d =') + 4:lst[nxt_ln].index(' | Sigma')])        
+                arm_state['s1'].append(lst[nxt_ln][lst[nxt_ln].index('q =') + 4:lst[nxt_ln].index(' | Theta')])        
+                arm_state['s2'].append(lst[nxt_ln][lst[nxt_ln].index('g =') + 4:lst[nxt_ln].index(' | Num')])        
+                arm_state['num_pull'].append(lst[nxt_ln][lst[nxt_ln].index('s =') + 4:lst[nxt_ln].index(' | Val')])        
+                arm_state['index_val'].append(lst[nxt_ln][lst[nxt_ln].index('e =') + 4:])
+            elif (method_type == 1):#Uniform Random
+                arm_state['id'].append('0')        
+                arm_state['s1'].append('0')        
+                arm_state['s2'].append('0')        
+                arm_state['num_pull'].append('0')        
+                arm_state['index_val'].append('0')            
+            elif (method_type == 2): # UCB
+                arm_state['id'].append(lst[nxt_ln][lst[nxt_ln].index('d =') + 4:lst[nxt_ln].index(' | Conf')])        
+                arm_state['s1'].append(lst[nxt_ln][lst[nxt_ln].index('f =') + 4:lst[nxt_ln].index(' | Theta')])        
+                arm_state['s2'].append(lst[nxt_ln][lst[nxt_ln].index('g =') + 4:lst[nxt_ln].index(' | Num')])        
+                arm_state['num_pull'].append(lst[nxt_ln][lst[nxt_ln].index('s =') + 4:lst[nxt_ln].index(' | UCB')])        
+                arm_state['index_val'].append(lst[nxt_ln][lst[nxt_ln].index('B =') + 4:])               
         arm_state_list[state_count] = arm_state
         #Increment the state counter
         state_count += 1
+            
+#    return arm_state_list, best_arm_state, rx_pos, tx_pos
 
 #Generate performance statistics
 percent_success = sum([int(i) for i in best_arm_state['success']])/len([int(i) for i in best_arm_state['success']])
