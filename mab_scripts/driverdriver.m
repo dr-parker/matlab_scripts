@@ -19,7 +19,7 @@ b = successTrials(j,2); %Number of trials
     % mabdriver(a,b,c,d,e)
     % c: 0- Uniform Random distribution, 1: Even mesh grid
     % d: 0- Gamma, 1- Exponential (Success of communication curve type)
-    % e: 0- Small distribution (20 locs), 1- Large distribution (100 locs)
+    % e: 0- Small distribution (9 locs), 1- Large distribution (20 locs)
     mabdriver(a,b,0,0,0); % These two data sets should produce the same
     mabdriver(a,b,0,1,0); % sets of locations
     

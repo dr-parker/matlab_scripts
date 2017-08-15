@@ -15,11 +15,11 @@ betaVal = 0;
 % NONE
 %**********OPTIONS FOR DATA COLLECTION*****************
 %Define rows and columns of candidate locations
-%Density of candidate locations: [5,4], [10,10]
+%Density of candidate locations: [3,3], [5,4]
 if sizeType == 0
-    m = 5; n = 4; 
+    m = 3; n = 3; 
 else if sizeType == 1
-        m = 10; n = 10;
+        m = 5; n = 4;
     end
 end
 N = m*n;
@@ -30,7 +30,7 @@ v = [0 1 2 3]; %Solution version: 0 - Gittins (Cheung), 1 - UCB,
       %2 - Epsilon Greedy (added 08APR17), 3 - Baseline (Random)
 spaceType = gridType; %Define type of spatial distibution of candidate locations (
                %0 - uniform random, 1 - even grid
-maxSpace = 20; %Max space of navigation area (nmi)
+maxSpace = 1000; %Max space of navigation area ([m], meant to represent 1x1 nmi^2)
 maxR = sqrt((2*maxSpace)^2+maxSpace^2); %Defines the max distance between two agents
 %Set locations         
 switch(spaceType)
@@ -93,7 +93,7 @@ for iter_i = iter
         % Store data in file according to -->
         % Spatial distribution type: Random/Uniform,
         % SoC type: Gamma/Exp, number of agents(or arms), number of time epochs, type of solution (GI/random)]
-        eval(['save(''./improv/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '.mat'');']);
+        eval(['save(''./improv_icra17/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '.mat'');']);
         waitbar(ii/length(v));
     end
     close(hhh)

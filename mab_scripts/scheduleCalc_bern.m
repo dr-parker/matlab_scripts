@@ -100,24 +100,24 @@ bestArmHistory = zeros(opts(2),5); %[X-pos Y-pos Prob(Separation Dist) Separatio
 %logarithmically as observations increase.
 %**************************************************************************
 %For beta =0.95
-v = [0.22263 0.28366 0.32072 0.34687 0.36678 0.38267 0.39577 0.40682 0.41631... %1-9
+vp = [0.22263 0.28366 0.32072 0.34687 0.36678 0.38267 0.39577 0.40682 0.41631... %1-9
      0.42458 0.47295 0.49583 0.50953 0.51876 0.52543 0.53050 0.53449 0.53771... %10-90
     0.54037 0.55344 0.55829 0.56084 0.56242 0.56351 0.56431 0.56493 0.56543 0.56583]; %100 - 1000
 
 % %For beta =0.8
-% v = [0.22582 0.27584 0.30297 0.32059 0.33314 0.34261 0.35005 0.35607 0.36105... %1-9
+% vp = [0.22582 0.27584 0.30297 0.32059 0.33314 0.34261 0.35005 0.35607 0.36105... %1-9
 %      0.36525 0.38715 0.39593 0.40070 0.40370 0.40577 0.40728 0.40843 0.40934... %10-90
 %      0.41008 0.41348 0.41466 0.41525 0.41561 0.41585 0.41602 0.41615 0.41625 0.41633]; %100 - 1000
 
 %For beta =0.5
-%v = [0.14542 0.17209 0.18522 0.19317 0.19855 0.20244 0.20539 0.20771 0.20959... %1-9
+%vp = [0.14542 0.17209 0.18522 0.19317 0.19855 0.20244 0.20539 0.20771 0.20959... %1-9
 %     0.21113 0.21867 0.22142 0.22286 0.22374 0.22433 0.22476 0.22508 0.22534... %10-90
 %     0.22554 0.22646 0.22678 0.22693 0.22703 0.22709 0.22714 0.22717 0.22720 0.22722]; %100 - 1000
  
 vi = [1:10,20:10:100,200:100:1000]; %Generate vector of iterations associated with pre-calculated Gittins' Indices
 
 vi_interp = linspace(1,1000,1000);
-vNew = interp1(vi,v,vi_interp,'cubic');
+vNew = interp1(vi,vp,vi_interp,'cubic');
 % %Plot of Gittins' Index values
 %figure;
 %plot(vi,v,'r');hold on
@@ -139,8 +139,8 @@ distTot = 0; %Initialize total distance traversed between arm selections
 % 1 - agent B location is estimated as the mean of all locations prior to
 % each transmission.
 
-stationaryB = 0;
-epsG = 0.25; %Define epsilon greedy const
+stationaryB = 1;
+epsG = 0.05; %Define epsilon greedy const
 switch(opts(1))
     case {0} %Solution by M. Cheung et al.
         %Initialize Gittins Index snap shot
