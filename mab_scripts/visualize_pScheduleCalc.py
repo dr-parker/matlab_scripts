@@ -8,10 +8,11 @@ from bokeh.models import HoverTool
 #data_file_in = open('pScheduleCalcBern_Gittins_Index_test100.txt','r')
 #data_file_name = 'GI_100.log'
 #data_file_name = 'UR_test.log'
-data_file_name = 'UCB_test.log'
+#data_file_name = 'UCB_test.log'
 #data_file_name = 'EG_test.log'
 data_file_in = open(data_file_name,'r')
-
+#Define parameters
+N = 9
 #Solution types: (0 - GI, UR - 1, UCB - 2, EG - 3)
 if 'GI' in data_file_name:
     method_type = 0
@@ -60,8 +61,6 @@ arm_state = {'id': [], 's1': [], 's2': [], 'num_pull': [], 'index_val': []}
 
 best_arm_state = {'count': [], 'tot_dist': [], 'id': [], 'lat': [], 'lon': [], 'success': []}
 state_count = 0
-#Define parameters
-N = 9
 
 # initialize dictionary to be used for hover data
 '''
@@ -184,7 +183,7 @@ for line in lst:
 #Generate performance statistics
 percent_success = sum([int(i) for i in best_arm_state['success']])/len([int(i) for i in best_arm_state['success']])
 total_distance = float(best_arm_state['tot_dist'][-1])
-print(percent_success*100)
+print("Percent Success: ", percent_success*100, " Total Dist: ", total_distance)
 
 '''        
     elif 'BestArmLoc To' in line:
