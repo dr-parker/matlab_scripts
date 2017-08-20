@@ -1,0 +1,5 @@
+# All txt files
+*.txt
+
+# All MATLAB .mat files
+*.mat

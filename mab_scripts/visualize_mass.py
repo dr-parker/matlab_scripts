@@ -63,8 +63,11 @@ soc = 1  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
 #nIter = 100  #Number of iterations (timesteps or duration, 100, 500, or 1000)
 nIter = (100, 500, 1000)
 
-#soln = 0     # Solution of interest (Gittins Index, GI - 0, Uninformed Random, UR - 1; Educated Guess, EG - 2)
+#soln = 0     # Solution of interest (Gittins Index, GI - 0, Upper Confidence Bound, UCB - 1, Epsilon Greedy, EG - 2, Uninformed Random, UR - 2;)
 soln = (0, 1, 2, 3)
+
+#Solution type
+soln_type = ('GI','UCB','EG','UR')
 
 distrT = 1    # Distribution type (Uniform Random - 0, Mesh grid - 1)
 # distrT = (0, 1)
@@ -72,7 +75,7 @@ distrT = 1    # Distribution type (Uniform Random - 0, Mesh grid - 1)
 bStationary = 1  # Flag indicating whether or not the TX agent ("B") is stationary (1) or not ()
 # bStationary = (0, 1)
 
-N = 20       # Number of candidate locations
+N = 20      # Number of candidate locations
 # N = (20, 100)
 
 # Import test scenario file
@@ -83,12 +86,14 @@ if distrT == 0:  # If Uniformly randomly distributed "arm" locations
 else:
     scen = 'mesh'
 
-locsFileIn = './testloc_'+scen+str(N)+'_cmp.txt'
+locsFileIn = './testloc_'+scen+str(N)+'_icra.txt'
 locs = pd.read_table(locsFileIn, header=None, sep=',', names=['alocx', 'alocy', 'blocx', 'blocy'])
 # Update to match candidate location input file
 
 # Create string for input file
-dataFileIn = './improv_testdata15MAY17_stationaryB_'+str(bStationary)+'_beta_p5.txt'
+dataFileIn = './improv_icradata19AUG17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
+#dataFileIn = './improv_testdata15MAY17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
+#dataFileIn = 'improv_icradata29JUL17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
 colT = ['id', 'selx', 'sely', 'rngP', 'rng', 'out', 'bern_cnt', 'distribution', 'soc', 'loc_cnt',
         'iter', 'sol_type', 'dist_tot']  # Define the column headers for data extraction
 data_in = pd.read_table(dataFileIn, header=None, sep=',', index_col=False, names=colT)
@@ -103,13 +108,15 @@ data_stat = []
 
 # Printing statistics of different sets of conditions
 for nI in nIter:
+    print('Iterations: ' + str(nI))
     for s in soln:
         # Define tuple of inputs to parsing function
         test_in = (bC, soc, nI, distrT, N, s)
         locs_stat, data_stat = parse_mab_input(data_in, test_in)
         success_total = locs_stat.loc[:, 'success'].astype(int).sum(axis=0)
         trial_total = locs_stat.loc[:, 'trials'].astype(int).sum(axis=0)
-        print("%6.2f\t%7.2f\n" % ((100*success_total/trial_total), data_stat.loc[1, 'dist_tot']))
+        print('%s: %6.2f\t%7.2f\n' % (soln_type[s], (100*success_total/trial_total), data_stat.loc[1, 'dist_tot']))
+
 
 '''
 #Print for a single case

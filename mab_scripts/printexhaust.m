@@ -8,7 +8,7 @@ vs = [0 1 2 3]; %Solution version: 0 - Varaiya, 1 - Baseline(random),
       %2 - Semi-intelligent
 h = waitbar(0, 'loading and writing data, WAIT!');
 
-data_name = strcat('improv_icradata29JUL17_stationaryB_1_beta_p95.txt');
+data_name = strcat('improv_icradata19AUG17_stationaryB_1_beta_p95.txt');
 sB = 0;
 
 %fid_data = fopen(data_name,'a+');
@@ -39,18 +39,18 @@ for bn = 1:length(bern) %For bernoulli condition of success
     end
     waitbar(ii/length(vs),h);
 end
-loc_name_rnd20 = strcat('testloc_rnd9_cmp.txt');
-loc_name_rnd100 = strcat('testloc_rnd20_cmp.txt');
-loc_name_mesh20 = strcat('testloc_mesh9_cmp.txt');
-loc_name_mesh100 = strcat('testloc_mesh20_cmp.txt');
+loc_name_rnd9_orig = strcat('testloc_rnd9_icra.txt');
+loc_name_rnd20_orig = strcat('testloc_rnd20_icra.txt');
+loc_name_mesh9_orig = strcat('testloc_mesh9_icra.txt');
+loc_name_mesh20_orig = strcat('testloc_mesh20_icra.txt');
 load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_0_0_9_100_0.mat')
-dlmwrite(loc_name_rnd20,[locsA locsB]);
+dlmwrite(loc_name_rnd9_orig,[locsA locsB]);
 load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_1_0_9_100_0.mat')
-dlmwrite(loc_name_mesh20,[locsA locsB]);
+dlmwrite(loc_name_mesh9_orig,[locsA locsB]);
 load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_0_0_20_100_0.mat')
-dlmwrite(loc_name_rnd100,[locsA locsB]);
+dlmwrite(loc_name_rnd20_orig,[locsA locsB]);
 load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_1_0_20_100_0.mat')
-dlmwrite(loc_name_mesh100,[locsA locsB]);
+dlmwrite(loc_name_mesh20_orig,[locsA locsB]);
 
 
 close(h)
