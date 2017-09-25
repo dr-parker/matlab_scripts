@@ -69,7 +69,7 @@ soln = (0, 1, 2, 3)
 #Solution type
 soln_type = ('GI','UCB','EG','UR')
 
-distrT = 1    # Distribution type (Uniform Random - 0, Mesh grid - 1)
+distrT = 0    # Distribution type (Uniform Random - 0, Mesh grid - 1)
 # distrT = (0, 1)
 
 bStationary = 1  # Flag indicating whether or not the TX agent ("B") is stationary (1) or not ()
@@ -91,7 +91,7 @@ locs = pd.read_table(locsFileIn, header=None, sep=',', names=['alocx', 'alocy', 
 # Update to match candidate location input file
 
 # Create string for input file
-dataFileIn = './improv_icradata19AUG17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
+dataFileIn = './improv_icradata21AUG17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
 #dataFileIn = './improv_testdata15MAY17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
 #dataFileIn = 'improv_icradata29JUL17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
 colT = ['id', 'selx', 'sely', 'rngP', 'rng', 'out', 'bern_cnt', 'distribution', 'soc', 'loc_cnt',
@@ -127,8 +127,8 @@ trial_total = locs_stat.loc[:, 'trials'].astype(int).sum(axis=0)
 print("%% Success: %6.2f --- Distance: %7.2f\n" % ((100*success_total/trial_total),
                                                            data_stat.loc[1, 'dist_tot']))                                                           
                                                            
-print(data_in)
-print(data_stat)
+#print(data_in)
+#print(data_stat)
 toplot = data_stat[['id']].copy()
 toplot.reset_index(level=0, inplace=True)
 

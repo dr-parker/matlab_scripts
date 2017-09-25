@@ -8,7 +8,7 @@ vs = [0 1 2 3]; %Solution version: 0 - Varaiya, 1 - Baseline(random),
       %2 - Semi-intelligent
 h = waitbar(0, 'loading and writing data, WAIT!');
 
-data_name = strcat('improv_icradata19AUG17_stationaryB_1_beta_p95.txt');
+data_name = strcat('improv_icradata21AUG17_stationaryB_1_beta_p95.txt');
 sB = 0;
 
 %fid_data = fopen(data_name,'a+');

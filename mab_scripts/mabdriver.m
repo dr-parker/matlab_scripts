@@ -46,8 +46,8 @@ switch(spaceType)
         %gap = maxSpace/N; %Not used
         size = [maxSpace,maxSpace];
         x = [];y = []; %Temporary vectors to store candidate locations
-        for i = 1:(size(1)/m):size(1)
-            for j = 1:(size(2)/n):size(2)
+        for i = 1:m
+            for j = 1:n
                 x = [x;(i-1)*(size(2)/m)];
                 y = [y;(j-1)*(size(2)/n)];
             end
@@ -94,9 +94,7 @@ for iter_i = iter
         % Spatial distribution type: Random/Uniform,
         % SoC type: Gamma/Exp, number of agents(or arms), number of time epochs, type of solution (GI/random)]
         eval(['save(''./improv_icra17/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '.mat'');']);
-        waitbar(ii/length(v));
     end
-    close(hhh)
     waitbar(iter_i/length(iter));
 end
 close(hh)

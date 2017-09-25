@@ -3,3 +3,6 @@
 
 # All MATLAB .mat files
 *.mat
+
+# All .CSV files
+*.csv
