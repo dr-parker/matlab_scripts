@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def parse_mab_input(data, test):
     # Extract relevant dataset pertaining to test scenario
     # Try to concatenate portions of data_in relevant to the scenario of interest
@@ -57,11 +56,11 @@ plotFeature = 0  # Set this value to 1
 bC = 1
 #bC = (1, 2, 3)       # Number of Bernoulli trials considered (1 - 1of1, 2 - 1of5, 3 - 1of10)
 
-soc = 1  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
+soc = 0  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
 # soc = (0, 1)
 
 #nIter = 100  #Number of iterations (timesteps or duration, 100, 500, or 1000)
-nIter = (100, 500, 1000)
+nIter = (50, 100, 200)
 
 #soln = 0     # Solution of interest (Gittins Index, GI - 0, Upper Confidence Bound, UCB - 1, Epsilon Greedy, EG - 2, Uninformed Random, UR - 2;)
 soln = (0, 1, 2, 3)
@@ -69,7 +68,7 @@ soln = (0, 1, 2, 3)
 #Solution type
 soln_type = ('GI','UCB','EG','UR')
 
-distrT = 1    # Distribution type (Uniform Random - 0, Mesh grid - 1)
+distrT = 0    # Distribution type (Uniform Random - 0, Mesh grid - 1)
 # distrT = (0, 1)
 
 bStationary = 1  # Flag indicating whether or not the TX agent ("B") is stationary (1) or not ()
@@ -86,18 +85,23 @@ if distrT == 0:  # If Uniformly randomly distributed "arm" locations
 else:
     scen = 'mesh'
 
-locsFileIn = './testloc_'+scen+str(N)+'_icra.txt'
-locs = pd.read_table(locsFileIn, header=None, sep=',', names=['alocx', 'alocy', 'blocx', 'blocy'])
+#locsFileIn = './testloc_'+scen+str(N)+'_icra.txt'
 # Update to match candidate location input file
-
+header_size = np.arange(0,63) # Size of header containing all canidate locations
 # Create string for input file
-dataFileIn = './improv_icradata19AUG17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
+dataFileIn = './improv_aamasdata03NOV17_stationaryB_'+str(bStationary)+'_beta_p95_143.txt'
 #dataFileIn = './improv_testdata15MAY17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
 #dataFileIn = 'improv_icradata29JUL17_stationaryB_'+str(bStationary)+'_beta_p95.txt'
 colT = ['id', 'selx', 'sely', 'rngP', 'rng', 'out', 'bern_cnt', 'distribution', 'soc', 'loc_cnt',
         'iter', 'sol_type', 'dist_tot']  # Define the column headers for data extraction
-data_in = pd.read_table(dataFileIn, header=None, sep=',', index_col=False, names=colT)
-
+data_in = pd.read_table(dataFileIn, header=None, skiprows=header_size, sep=',', index_col=False, names=colT)
+d_file = open(dataFileIn,'r')
+lst = [line.strip() for line in d_file.readlines()] #Remove extra white space from front and back of lines
+for line in lst:
+    if (scen+str(N) in line):
+        locs =  pd.read_table(dataFileIn,header=None,skiprows=np.arange(lst.index(line)+1),sep=',',names=['alocx', 'alocy', 'blocx', 'blocy'],nrows=N)
+        break;
+        
 # Change data types of specific columns (i.e., float for some columns and int for others)
 data_in[['selx', 'sely', 'rngP', 'rng']] = data_in[['selx', 'sely', 'rngP', 'rng']].astype(float)
 data_in[['id', 'out', 'bern_cnt', 'distribution', 'soc', 'loc_cnt', 'iter', 'sol_type',
