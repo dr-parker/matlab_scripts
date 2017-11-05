@@ -1,4 +1,4 @@
-function [bestArmHistory, agentId, agentB, c_r, distTot, solnMat] = scheduleCalc_bern(beta,armLocA,armLocB,opts,mR,pType)
+function [bestArmHistory, agentId, agentB, c_r, distTot, solnMat] = scheduleCalc_bern(beta,armLocA,armLocB,opts,mR,pType,svalue)
 %Test script for schedule algorithm based on Weber Tutorial and L. Gregorio
 %This script is modified to account/test for the impact of alternating
 %arm/location selection to mimic TDMA communication protocol.
@@ -30,6 +30,8 @@ function [bestArmHistory, agentId, agentB, c_r, distTot, solnMat] = scheduleCalc
 % mR: Maximum possible distance between agents
 % pType: Success of Communication curve type (exponential or gamma) (as of
 % 10FEB17.
+% svalue: Seed value for random number generator, defined in driverdrive.m
+% and passed through from mabdriver.m
 % OUTPUTS
 % bestArmHistory: A Nx4 vector of information representing a) the physical 
 % locations of the best arm selection, [x,y], b) the separation distance at
@@ -46,7 +48,7 @@ function [bestArmHistory, agentId, agentB, c_r, distTot, solnMat] = scheduleCalc
 % (Gittins/UCB/epsion-greedy) for each location (or arm). This variable
 % will be empty if a purely random solution is sought.
 
-rng('default'); %Set seed value for reproduceability
+rng(svalue); %Set seed value for reproduceability
 load socs.mat % Load SoC options
 %Calculate derivative of SoC
 if pType == 0
