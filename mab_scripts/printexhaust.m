@@ -3,55 +3,63 @@ socType = [0 1]; %Type of Success of Comms curve (0-gamma, 1-exp)
 socTypeS = {'gamma','exp'};
 NN=[9 20]; %Number of agents
 distType = [0 1]; % Spatial distribution type (0-Random, 1-Mesh)
-iters = [100 500 1000]; %Number of iterations ("t")
+iters = [50 100 200]; %Number of iterations ("t")
 vs = [0 1 2 3]; %Solution version: 0 - Varaiya, 1 - Baseline(random),
       %2 - Semi-intelligent
+sd = 143:163; %Range of seed values used to generate datasets (as of 03NOV17)
 h = waitbar(0, 'loading and writing data, WAIT!');
-
-data_name = strcat('improv_icradata19AUG17_stationaryB_1_beta_p95.txt');
 sB = 0;
 
 %fid_data = fopen(data_name,'a+');
 %fid_loc = fopen(loc_name,'a+');
 
-for bn = 1:length(bern) %For bernoulli condition of success
-    for dT = distType % Spatial distribution of candidate locations
-        for sT = socType %Type of SoC curve
-            for nn = NN % Number of candidate locations
-                for iterate_i = iters % Number of iterations
-                    for ii = vs % Solution type
-                        [ii iterate_i bn nn]
-                        load(char(strcat('./improv_icra17/data_stationaryB_1/cond_',...
-                             bern(bn),'/',...
-                            'dataout_',...
-                            num2str(dT),'_',...
-                            num2str(sT), '_', num2str(nn), '_',...
-                            num2str(iterate_i), '_', num2str(ii), '.mat')));
-                        ob = ones(length(histA),1); %Generic 1's vector
-                        dlmwrite(data_name,...
-                            [aId' histA bn*ob, dT*ob, sT*ob, nn*ob, iterate_i*ob, ii*ob distMax*ob],'-append');
-                        %dlmwrite(loc_name,[locsA locsB],'-append');
+for sd_i = sd %Cycle through each seed value
+data_name = strcat('improv_aamasdata03NOV17_stationaryB_1_beta_p95_', num2str(sd_i),'.txt');
+%Append header of all locations used as a part of the test file for dataset
+%with a specific seed value, sd_i
+load(char(strcat('./improv_aamas17/data_stationaryB_1/cond_1of1/dataout_0_0_9_100_0_', num2str(sd_i),'.mat')));
+dlmwrite(data_name,'rand9','delimiter','','newline','pc','-append');
+dlmwrite(data_name,[locsA locsB],'newline','pc','-append');
+
+load(char(strcat('./improv_aamas17/data_stationaryB_1/cond_1of1/dataout_1_0_9_100_0_', num2str(sd_i),'.mat')));
+dlmwrite(data_name,{'mesh9'},'delimiter','','newline','pc','-append');
+dlmwrite(data_name,[locsA locsB],'newline','pc','-append');
+
+load(char(strcat('./improv_aamas17/data_stationaryB_1/cond_1of1/dataout_0_0_20_100_0_', num2str(sd_i),'.mat')));
+dlmwrite(data_name,{'rand20'},'delimiter','','newline','pc','-append');
+dlmwrite(data_name,[locsA locsB],'newline','pc','-append');
+
+load(char(strcat('./improv_aamas17/data_stationaryB_1/cond_1of1/dataout_1_0_20_100_0_', num2str(sd_i),'.mat')));
+dlmwrite(data_name,{'mesh20'},'delimiter','','newline','pc','-append');
+dlmwrite(data_name,[locsA locsB],'newline','pc','-append');
+    
+dlmwrite(data_name,{'DATA'},'delimiter','','newline','pc','-append');    
+    for bn = 1:length(bern) %For bernoulli condition of success
+        for dT = distType % Spatial distribution of candidate locations
+            for sT = socType %Type of SoC curve
+                for nn = NN % Number of candidate locations
+                    for iterate_i = iters % Number of iterations
+                        for ii = vs % Solution type
+                            [ii iterate_i bn nn]
+                            load(char(strcat('./improv_aamas17/data_stationaryB_1/cond_',...
+                                 bern(bn),'/',...
+                                'dataout_',...
+                                num2str(dT),'_',...
+                                num2str(sT), '_', num2str(nn), '_',...
+                                num2str(iterate_i), '_', num2str(ii), '_', num2str(sd_i), '.mat')));
+                            ob = ones(length(histA),1); %Generic 1's vector
+                            dlmwrite(data_name,...
+                                [aId' histA bn*ob, dT*ob, sT*ob, nn*ob, iterate_i*ob, ii*ob distMax*ob],'newline','pc','-append');
+                            %dlmwrite(loc_name,[locsA locsB],'-append');
+                        end
                     end
                 end
             end
+            clearvars -except bn bern dT distType sT socType nn NN iterate_i iters ii vs data_name loc_name h sd_i %Clear previous data
         end
-        clearvars -except bn bern dT distType sT socType nn NN iterate_i iters ii vs data_name loc_name h %Clear previous data
+        waitbar(ii/length(vs),h);
     end
-    waitbar(ii/length(vs),h);
 end
-loc_name_rnd9_orig = strcat('testloc_rnd9_icra.txt');
-loc_name_rnd20_orig = strcat('testloc_rnd20_icra.txt');
-loc_name_mesh9_orig = strcat('testloc_mesh9_icra.txt');
-loc_name_mesh20_orig = strcat('testloc_mesh20_icra.txt');
-load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_0_0_9_100_0.mat')
-dlmwrite(loc_name_rnd9_orig,[locsA locsB]);
-load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_1_0_9_100_0.mat')
-dlmwrite(loc_name_mesh9_orig,[locsA locsB]);
-load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_0_0_20_100_0.mat')
-dlmwrite(loc_name_rnd20_orig,[locsA locsB]);
-load('./improv_icra17/data_stationaryB_1/cond_1of1/dataout_1_0_20_100_0.mat')
-dlmwrite(loc_name_mesh20_orig,[locsA locsB]);
-
 
 close(h)
 
