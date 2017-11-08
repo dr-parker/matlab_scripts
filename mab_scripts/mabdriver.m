@@ -24,7 +24,7 @@ else if sizeType == 1
     end
 end
 N = m*n;
-iter = [50 100 200]; %Number of iterations ("t") %10FEB17: Removed 500 and 1000 to
+iter = [75 125 150 175]; %Number of iterations ("t") %10FEB17: Removed 500 and 1000 to
 % speed up analysis.
 %iter = [50 100 150 200]; %Number of iterations ("t")
 v = [0 1 2 3]; %Solution version: 0 - Gittins (Cheung), 1 - UCB,
