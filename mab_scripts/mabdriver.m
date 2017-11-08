@@ -1,5 +1,5 @@
-function [] = mabdriver(kk, noN, gridType, probType, sizeType)
-rng('default');
+function [] = mabdriver(kk, noN, gridType, probType, sizeType, SD)
+rng(SD);
 betaVal = 0;
 
 %INPUTS
@@ -11,6 +11,7 @@ betaVal = 0;
 % agents.
 % sizeType: A flag to determine the density of locations to be evaluated
 % (0: small [20], 1: large [100])
+% SD: Seed value used for random number generator
 % OUTPUTS
 % NONE
 %**********OPTIONS FOR DATA COLLECTION*****************
@@ -23,7 +24,7 @@ else if sizeType == 1
     end
 end
 N = m*n;
-iter = [100 500 1000]; %Number of iterations ("t") %10FEB17: Removed 500 and 1000 to
+iter = [50 75 100 125 150 175 200]; %Number of iterations ("t") %10FEB17: Removed 500 and 1000 to
 % speed up analysis.
 %iter = [50 100 150 200]; %Number of iterations ("t")
 v = [0 1 2 3]; %Solution version: 0 - Gittins (Cheung), 1 - UCB,
@@ -82,7 +83,7 @@ for iter_i = iter
         %[histA aId] = scheduleCalc(betaVal,locsA,locsB,[v iter],maxR);
 
         %Use for single agent Bernoulli version
-        [histA aId aB gRef distMax solnHist] = scheduleCalc_bern(betaVal,locsA,locsB,[ii iter_i kk noN],maxR,probType);
+        [histA aId aB gRef distMax solnHist] = scheduleCalc_bern(betaVal,locsA,locsB,[ii iter_i kk noN],maxR,probType,SD);
 
         %Use for single agent Bernoulli version and binomial-defined rewards
         %[histA aId aB gRef] = scheduleCalc_bernbino(betaVal,locsA,locsB,[v iter],maxR);
@@ -93,7 +94,8 @@ for iter_i = iter
         % Store data in file according to -->
         % Spatial distribution type: Random/Uniform,
         % SoC type: Gamma/Exp, number of agents(or arms), number of time epochs, type of solution (GI/random)]
-        eval(['save(''./improv_icra17/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '.mat'');']);
+        eval(['save(''./improv_aamas17/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '_' num2str(SD) '.mat'');']);
+        waitbar(ii/length(v));
     end
     waitbar(iter_i/length(iter));
 end
