@@ -161,8 +161,13 @@ for sI, soln in enumerate(solns, start=0): #Specifies the dataset pertaining to 
     
 fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=(10, 2))
 ax = axs[0]
-ax.plot(nIters,soln_mean[0],pretty[0],nIters,soln_mean[1],pretty[1],nIters,soln_mean[2],pretty[2],nIters,soln_mean[3],pretty[3])
-ax.legend(['GI','UCB','EG','UR'])
+ax.plot(nIters,soln_mean[0],pretty[0],label="GI")
+ax.plot(nIters,soln_mean[1],pretty[1],label="UCB")
+ax.plot(nIters,soln_mean[2],pretty[2],label="EG")
+ax.plot(nIters,soln_mean[3],pretty[3],label="UR")
+#ax.legend(['GI','UCB','EG','UR'])
+plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=4, mode="expand", borderaxespad=0.)
 ax.set_title('Success')
 
 ax = axs[1]
