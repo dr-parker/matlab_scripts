@@ -58,11 +58,11 @@ plotFeature = 0  # Set this value to 1
 bC = 1
 #bC = (1, 2, 3)       # Number of Bernoulli trials considered (1 - 1of1, 2 - 1of5, 3 - 1of10)
 
-soc = 0  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
+soc = 1  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
 # soc = (0, 1)
 
 #nIter = 100  #Number of iterations (timesteps or duration, 100, 500, or 1000)
-nIters = (50, 100, 200)
+nIters = (50, 75, 100, 125, 150, 175, 200)
 
 #Solution type, (Gittins Index, GI - 0, Upper Confidence Bound, UCB - 1, Epsilon Greedy, EG - 2, Uninformed Random, UR - 2;)
 solns = ('GI','UCB','EG','UR')
@@ -88,16 +88,16 @@ else:
 # Update to match candidate location input file
 header_size = np.arange(0,63) # Size of header containing all canidate locations
 #Range of seed values used to generate datasets for each set of conditions
-sd_rngs = np.arange(143,151)
+sd_rngs = np.arange(143,243)
 # Create a list of dictionarys to hold datasets for each seed value
 soln_state_list = [dict() for x in range(sd_rngs.size)]
 seed_cnt = 0;
 #Define dict of solutions
 soln_stat = {'GI': [], 'UCB': [], 'EG': [], 'UR': []} #Used for percent successes
 soln_dist = {'GI': [], 'UCB': [], 'EG': [], 'UR': []} #Used for total distances
-
+outdir = './outdata_08NOV17/outdata_08NOV17/'
 for sd_rngI, sd_rng in enumerate(sd_rngs, start=0):
-    dataFileIn = './improv_aamasdata03NOV17_stationaryB_'+str(bStationary)+'_beta_p95_'+str(sd_rng)+'.txt'
+    dataFileIn = outdir+'improv_aamasdata03NOV17_stationaryB_'+str(bStationary)+'_beta_p95_'+str(sd_rng)+'.txt'
     '''Identify the set of candidate locations within selected datafile associated with the arm specifications
     i.e., rand9 versus rand20 versus mesh9 versus mesh20.'''
     d_file = open(dataFileIn,'r')
@@ -143,7 +143,7 @@ for sd_rngI, sd_rng in enumerate(sd_rngs, start=0):
                 soln_dist[soln].append([data_stat.loc[1, 'dist_tot']/D])
             else:
                 soln_stat[soln][nI].append((100*success_total/trial_total)) 
-                soln_dist[soln][nI].append(data_stat.loc[1, 'dist_tot']/D)
+                soln_dist[soln][nI].append(100*(data_stat.loc[1, 'dist_tot']/D))
             #print('%s: %6.2f\t%7.2f\n' % (soln_type[s], (100*success_total/trial_total), data_stat.loc[1, 'dist_tot']))
 
     #Unused dict of dict
@@ -151,29 +151,73 @@ for sd_rngI, sd_rng in enumerate(sd_rngs, start=0):
     #seed_cnt += 1
 soln_mean = {'0':[],'1':[],'2':[],'3':[]}
 soln_mean_dist = {'0':[],'1':[],'2':[],'3':[]}
-pretty = ['rp-','bs-','g^-','c+-']
+pretty = ['rp-','bs-','g^-','c*-']
 for sI, soln in enumerate(solns, start=0): #Specifies the dataset pertaining to a specific solution (GI, UCB, EG, or UR)
-    soln_mean[sI] = [np.mean(soln_stat[soln][0]), np.mean(soln_stat[soln][1]), np.mean(soln_stat[soln][2])]
-    soln_mean_dist[sI] = [np.mean(soln_dist[soln][0]), np.mean(soln_dist[soln][1]), np.mean(soln_dist[soln][2])]
+    soln_mean[sI] = [np.mean(soln_stat[soln][0]), np.mean(soln_stat[soln][1]), np.mean(soln_stat[soln][2]), np.mean(soln_stat[soln][3]), np.mean(soln_stat[soln][4]), np.mean(soln_stat[soln][5]), np.mean(soln_stat[soln][6])]
+    soln_mean_dist[sI] = [np.mean(soln_dist[soln][0]), np.mean(soln_dist[soln][1]), np.mean(soln_dist[soln][2]), np.mean(soln_dist[soln][3]), np.mean(soln_dist[soln][4]), np.mean(soln_dist[soln][5]), np.mean(soln_dist[soln][6])]
     #soln_std =  [np.std(soln_stat[soln][0]), np.std(soln_stat[soln][1]), np.std(soln_stat[soln][2])]
     print('Solution: ' + soln + ': ' + str(soln_mean[sI]) + '    Dist: ' + str(soln_mean_dist[sI]))    
 #plt.errorbar(nIters,soln_mean,yerr=eg_std)
     
-fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=(10, 2))
-ax = axs[0]
-ax.plot(nIters,soln_mean[0],pretty[0],label="GI")
-ax.plot(nIters,soln_mean[1],pretty[1],label="UCB")
-ax.plot(nIters,soln_mean[2],pretty[2],label="EG")
-ax.plot(nIters,soln_mean[3],pretty[3],label="UR")
+#fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=(10, 2))
+#ax = axs[0]
+#ax.plot(nIters,soln_mean[0],pretty[0],nIters,soln_mean[1],pretty[1],nIters,soln_mean[2],pretty[2],nIters,soln_mean[3],pretty[3])
 #ax.legend(['GI','UCB','EG','UR'])
-plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-           ncol=4, mode="expand", borderaxespad=0.)
-ax.set_title('Success')
+#ax.set_title('Success')
+#ax.set_title('Success')
+#
+#ax = axs[1]
+#ax.plot(nIters,soln_mean_dist[0],pretty[0],nIters,soln_mean_dist[1],pretty[1],nIters,soln_mean_dist[2],pretty[2],nIters,soln_mean_dist[3],pretty[3])
+#ax.legend(['GI','UCB','EG','UR'])
+#ax.set_title('Distance')
 
-ax = axs[1]
-ax.plot(nIters,soln_mean_dist[0],pretty[0],nIters,soln_mean_dist[1],pretty[1],nIters,soln_mean_dist[2],pretty[2],nIters,soln_mean_dist[3],pretty[3])
-ax.legend(['GI','UCB','EG','UR'])
-ax.set_title('Distance')
+
+#fig, axes = plt.subplots(nrows=1, ncols=2)
+
+#plt.setp(axes, xticks=[50, 100, 150, 200], xticklabels=['50', '100', '150', '200'],
+        #yticks=[25, 50, 75, 100])
+#Use if you want to change one specific set of axes using "set current axes", sca
+#plt.sca(axes[0])
+#plt.yticks(range(3), ['A', 'Big', 'Cat'])
+plt.figure(figsize=(10,4))
+plt.subplot(121)
+#ax.plot(nIters,soln_mean[0],pretty[0],nIters,soln_mean[1],pretty[1],nIters,soln_mean[2],pretty[2],nIters,soln_mean[3],pretty[3])
+#ax.legend(['GI','UCB','EG','UR'])
+#ax.set_title('Success')
+plt.plot(nIters,soln_mean[0], pretty[0], label="GI")
+plt.plot(nIters,soln_mean[1], pretty[1], label="UCB")
+plt.plot(nIters,soln_mean[2], pretty[2], label="EG")
+plt.plot(nIters,soln_mean[3], pretty[3], label="UR")
+plt.xticks([50, 100, 150, 200])
+#plt.yticks([25, 50, 75, 100])
+#ax.legend(['GI','UCB','EG','UR'])
+plt.legend(bbox_to_anchor=(0.1, 1.05, 2., .102), loc=3,
+           ncol=4, mode="expand", borderaxespad=0.)
+plt.ylabel('% Success')
+plt.xlabel('Decision Epoch')
+#plt.setp(sp1, xticks=[50, 100, 150, 200], xticklabels=['50', '100', '150', '200'],
+#        yticks=[25, 50, 75, 100])
+#start, end = plt.Axes.get_xaxis()
+#plt.Axes.xaxis.set_ticks(np.arange(0, 200, 25))
+#plt.figure(figsize=(10,5))
+plt.subplot(122)
+#ax.plot(nIters,soln_mean[0],pretty[0],nIters,soln_mean[1],pretty[1],nIters,soln_mean[2],pretty[2],nIters,soln_mean[3],pretty[3])
+#ax.legend(['GI','UCB','EG','UR'])
+#ax.set_title('Success')
+plt.plot(nIters,soln_mean_dist[0], pretty[0], label="GI")
+plt.plot(nIters,soln_mean_dist[1], pretty[1], label="UCB")
+plt.plot(nIters,soln_mean_dist[2], pretty[2], label="EG")
+plt.plot(nIters,soln_mean_dist[3], pretty[3], label="UR")
+plt.xticks([50, 100, 150, 200])
+plt.xlabel('Decision Epoch')
+#plt.yticks([25, 50, 75, 100])
+#ax.legend(['GI','UCB','EG','UR'])
+#plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+#           ncol=4, mode="expand", borderaxespad=0.)
+plt.ylabel('% Distance')
+
+#plt.savefig('rand9exp.png', bbox_inches='tight')
+
 
 #for index, nI in enumerate(nIter, start=0):
 #    print('Index '+ str(index) +' and nI '+ str(nI))

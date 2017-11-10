@@ -24,7 +24,7 @@ else if sizeType == 1
     end
 end
 N = m*n;
-iter = [50 100 200]; %Number of iterations ("t") %10FEB17: Removed 500 and 1000 to
+iter = [50 75 100 125 150 175 200]; %Number of iterations ("t") %10FEB17: Removed 500 and 1000 to
 % speed up analysis.
 %iter = [50 100 150 200]; %Number of iterations ("t")
 v = [0 1 2 3]; %Solution version: 0 - Gittins (Cheung), 1 - UCB,
@@ -47,8 +47,8 @@ switch(spaceType)
         %gap = maxSpace/N; %Not used
         size = [maxSpace,maxSpace];
         x = [];y = []; %Temporary vectors to store candidate locations
-        for i = 1:(size(1)/m):size(1)
-            for j = 1:(size(2)/n):size(2)
+        for i = 1:m
+            for j = 1:n
                 x = [x;(i-1)*(size(2)/m)];
                 y = [y;(j-1)*(size(2)/n)];
             end
@@ -97,7 +97,6 @@ for iter_i = iter
         eval(['save(''./improv_aamas17/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '_' num2str(SD) '.mat'');']);
         waitbar(ii/length(v));
     end
-    close(hhh)
     waitbar(iter_i/length(iter));
 end
 close(hh)
