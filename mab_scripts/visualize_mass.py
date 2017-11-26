@@ -55,10 +55,10 @@ plotFeature = 0  # Set this value to 1
 
 # Initialize parameters
 # Define parameters of interest
-bC = 1
+bC = 3
 #bC = (1, 2, 3)       # Number of Bernoulli trials considered (1 - 1of1, 2 - 1of5, 3 - 1of10)
 
-soc = 1  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
+soc = 0  # Type of Success of Communication curve (0 - Gamma, 1 - Exponential)
 # soc = (0, 1)
 
 #nIter = 100  #Number of iterations (timesteps or duration, 100, 500, or 1000)
@@ -73,7 +73,7 @@ distrT = 0    # Distribution type (Uniform Random - 0, Mesh grid - 1)
 bStationary = 1  # Flag indicating whether or not the TX agent ("B") is stationary (1) or not ()
 # bStationary = (0, 1)
 
-N = 9      # Number of candidate locations
+N = 20     # Number of candidate locations
 # N = (20, 100)
 
 # Import test scenario file
@@ -149,14 +149,17 @@ for sd_rngI, sd_rng in enumerate(sd_rngs, start=0):
     #Unused dict of dict
     #soln_state_list[seed_cnt] = soln_stat
     #seed_cnt += 1
-soln_mean = {'0':[],'1':[],'2':[],'3':[]}
-soln_mean_dist = {'0':[],'1':[],'2':[],'3':[]}
+soln_mean = {}
+soln_mean_dist = {}
+    
+#soln_mean = {'0':[],'1':[],'2':[],'3':[]}
+#soln_mean_dist = {'0':[],'1':[],'2':[],'3':[]}
 pretty = ['rp-','bs-','g^-','c*-']
 for sI, soln in enumerate(solns, start=0): #Specifies the dataset pertaining to a specific solution (GI, UCB, EG, or UR)
     soln_mean[sI] = [np.mean(soln_stat[soln][0]), np.mean(soln_stat[soln][1]), np.mean(soln_stat[soln][2]), np.mean(soln_stat[soln][3]), np.mean(soln_stat[soln][4]), np.mean(soln_stat[soln][5]), np.mean(soln_stat[soln][6])]
     soln_mean_dist[sI] = [np.mean(soln_dist[soln][0]), np.mean(soln_dist[soln][1]), np.mean(soln_dist[soln][2]), np.mean(soln_dist[soln][3]), np.mean(soln_dist[soln][4]), np.mean(soln_dist[soln][5]), np.mean(soln_dist[soln][6])]
     #soln_std =  [np.std(soln_stat[soln][0]), np.std(soln_stat[soln][1]), np.std(soln_stat[soln][2])]
-    print('Solution: ' + soln + ': ' + str(soln_mean[sI]) + '    Dist: ' + str(soln_mean_dist[sI]))    
+    #print('Solution: ' + soln + ': ' + str(soln_mean[sI]) + '    Dist: ' + str(soln_mean_dist[sI]))    
 #plt.errorbar(nIters,soln_mean,yerr=eg_std)
     
 #fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=(10, 2))
@@ -170,6 +173,8 @@ for sI, soln in enumerate(solns, start=0): #Specifies the dataset pertaining to 
 #ax.plot(nIters,soln_mean_dist[0],pretty[0],nIters,soln_mean_dist[1],pretty[1],nIters,soln_mean_dist[2],pretty[2],nIters,soln_mean_dist[3],pretty[3])
 #ax.legend(['GI','UCB','EG','UR'])
 #ax.set_title('Distance')
+for sI, soln in enumerate(solns, start=0): #Specifies the dataset pertaining to a specific solution (GI, UCB, EG, or UR)
+    print(solns[sI] + ': '+ str(np.mean(soln_mean[sI])) + ', ' + str(np.mean(soln_mean_dist[sI])))
 
 
 #fig, axes = plt.subplots(nrows=1, ncols=2)
