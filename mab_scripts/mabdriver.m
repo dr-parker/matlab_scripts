@@ -67,11 +67,11 @@ end
 %     plot(locsA(:,1),locsA(:,2),'b*');
 %     plot(locsB(:,1),locsB(:,2),'r*');
 %**********SETTINGS FOR DATA COLLECTION*****************
-hh = waitbar(0,'Please wait...running through iterations');
+%hh = waitbar(0,'Please wait...running through iterations');
 
 for iter_i = iter
     iter_i
-    hhh = waitbar(0,'Please wait...running through types of methods');
+    %hhh = waitbar(0,'Please wait...running through types of methods');
     for ii = v
         ii
         %figure;plot(locsA(:,1),locsA(:,2),'r*');hold on;plot(locsB(:,1),locsB(:,2),'b*')
@@ -95,8 +95,8 @@ for iter_i = iter
         % Spatial distribution type: Random/Uniform,
         % SoC type: Gamma/Exp, number of agents(or arms), number of time epochs, type of solution (GI/random)]
         eval(['save(''./improv_aamas17/data_stationaryB_1/cond_' num2str(kk) 'of' num2str(noN) '/dataout_' num2str(spaceType) '_' num2str(probType) '_' num2str(N) '_' num2str(iter_i) '_' num2str(ii) '_' num2str(SD) '.mat'');']);
-        waitbar(ii/length(v));
+        %waitbar(ii/length(v));
     end
-    waitbar(iter_i/length(iter));
+    %waitbar(iter_i/length(iter));
 end
-close(hh)
+%close(hh)
